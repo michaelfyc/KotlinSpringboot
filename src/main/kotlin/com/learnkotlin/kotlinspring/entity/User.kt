@@ -11,7 +11,7 @@ import javax.validation.constraints.Size
 data class User @AutomapConstructor constructor(
     @TableId(type = IdType.AUTO)
     var uid: Int = 0,
-    var username: String,
+    var username: String = "",
     @field:Size(min = 6, max = 30, message = "password length must be between 6 and 30")
     var password: String,
     @field:Email(message = "invalid email address")

@@ -1,6 +1,5 @@
 package com.learnkotlin.kotlinspring.service.impl
 
-import com.baomidou.mybatisplus.extension.service.IService
 import com.learnkotlin.kotlinspring.entity.Article
 import com.learnkotlin.kotlinspring.mapper.ArticleMapper
 import com.learnkotlin.kotlinspring.mapper.UserMapper

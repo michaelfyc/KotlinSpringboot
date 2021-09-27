@@ -1,14 +1,15 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
-import com.learnkotlin.kotlinspring.util.CommonExceptions
 import com.learnkotlin.kotlinspring.util.DuplicationEmailException
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
@@ -22,7 +23,6 @@ internal class UserServiceImplTest {
         users.add(userAndy)
         users.add(userJohn)
     }
-
 
     @Autowired
     lateinit var userServiceImpl: UserServiceImpl
@@ -43,7 +43,6 @@ internal class UserServiceImplTest {
             assertEquals(-1, status)
             assertTrue(e is DuplicationEmailException)
         }
-
     }
 
     @Test
