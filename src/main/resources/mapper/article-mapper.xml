@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learnkotlin.kotlinspring.mapper.ArticleMapper">
+    <select id="getArticleByArticleId" resultType="com.learnkotlin.kotlinspring.entity.Article">
+        SELECT *
+        FROM article
+        WHERE `article_id` = #{articleId}
+          and `is_visible` = true
+    </select>
+    <select id="listArticleByAuthorId" resultType="com.learnkotlin.kotlinspring.entity.Article">
+        SELECT *
+        FROM article
+        WHERE `author_id` = #{authorId}
+          and `is_visible` = true
+    </select>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learnkotlin.kotlinspring.mapper.UserMapper">
+    <insert id="batchCreateUser" parameterType="java.util.HashSet">
+        INSERT INTO user(`username`,`password`,`is_locked`) VALUES
+        <foreach collection="users" separator="," item="user">
+            (#{user.username},#{user.password},#{user.isLocked})
+        </foreach>
+    </insert>
+    <select id="getUserByEmail" parameterType="string" resultType="com.learnkotlin.kotlinspring.entity.User">
+        SELECT *
+        FROM user
+        WHERE email = #{email}
+    </select>
+</mapper>

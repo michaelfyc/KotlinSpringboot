@@ -1,0 +1,38 @@
+POST http://localhost:3690/api/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "123456"
+}
+
+###
+POST http://localhost:3690/api/login
+Content-Type: application/json
+
+{
+  "email": "Andy",
+  "password": "123456"
+}
+
+###
+POST http://localhost:3690/api/register
+Content-Type: application/json
+
+{
+  "uid": 0,
+  "username": "John",
+  "password": "123456",
+  "email": "john@example.com"
+}
+
+###
+POST http://localhost:3690/api/register
+Content-Type: application/json
+
+{
+  "uid": 0,
+  "username": "Joshua",
+  "password": "120003",
+  "email": "joshua@example.com"
+}
