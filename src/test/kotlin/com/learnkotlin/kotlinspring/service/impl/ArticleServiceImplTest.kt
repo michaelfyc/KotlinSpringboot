@@ -17,8 +17,8 @@ import java.time.LocalDateTime
 @SpringBootTest
 internal class ArticleServiceImplTest {
 
-    private val existUserId = 9
-    private val notExistUserId = 1
+    private val existUserId = 1
+    private val notExistUserId = 2
 
     private val title = "嘉然，你带我走吧"
 
@@ -70,9 +70,18 @@ internal class ArticleServiceImplTest {
     @Test
     @Transactional
     fun testListArticleByAuthorId_1() {
+        // 查询存在的用户，但是没有创建文章
+        val articles = articleServiceImpl.listArticleByAuthorId(existUserId)
+        assertNotNull(articles!!)
+        assertEquals(0, articles.size)
+    }
+
+    @Test
+    @Transactional
+    fun testListArticleByAuthorId_2() {
+        // 查询存在的用户，且用户有文章
         val articleId = articleServiceImpl.createArticle(article)
         assertTrue(articleId > 0)
-        // 查询存在的用户的文章
         val articles = articleServiceImpl.listArticleByAuthorId(existUserId)
         assertNotNull(articles)
         assertEquals(1, articles!!.size)
@@ -80,5 +89,23 @@ internal class ArticleServiceImplTest {
         assertEquals(article.title, articleByAuthor.title)
         assertEquals(article.content, articleByAuthor.content)
         assertEquals(article.createAt, articleByAuthor.createAt.withNano(0))
+    }
+
+    @Test
+    @Transactional
+    fun getArticleByArticleId_0() {
+        // 查询不存在的 articleId
+        val article = articleServiceImpl.getArticleByArticleId(999)
+        assertNull(article)
+    }
+
+    @Test
+    @Transactional
+    fun getArticleByArticleId_1() {
+        // 查询存在的 articleId
+        val articleId = articleServiceImpl.createArticle(article)
+        val article = articleServiceImpl.getArticleByArticleId(articleId)
+        assertNotNull(article)
+        //其余已在 testCreateArticle 验证过
     }
 }
