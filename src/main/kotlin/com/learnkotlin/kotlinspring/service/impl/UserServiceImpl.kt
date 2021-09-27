@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service
 class UserServiceImpl : IUserService {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
-
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -44,5 +43,4 @@ class UserServiceImpl : IUserService {
     override fun batchCreateUser(users: HashSet<User>) {
         userMapper.batchCreateUser(users)
     }
-
 }

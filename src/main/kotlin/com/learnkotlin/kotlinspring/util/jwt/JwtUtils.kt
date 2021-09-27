@@ -3,12 +3,9 @@ package com.learnkotlin.kotlinspring.util.jwt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-
 import com.auth0.jwt.interfaces.DecodedJWT
 import org.slf4j.LoggerFactory
-import java.util.*
-import java.util.logging.Logger
-
+import java.util.Date
 
 class JwtUtils {
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -58,5 +55,4 @@ class JwtUtils {
         val jwt = JWT.decode(token)
         return jwt.getClaim("username").asString()
     }
-
 }

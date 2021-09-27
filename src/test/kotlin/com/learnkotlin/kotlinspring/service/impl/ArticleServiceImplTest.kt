@@ -2,18 +2,17 @@ package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.Article
 import com.learnkotlin.kotlinspring.util.BadRequestException
-import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.*
-import kotlin.contracts.contract
 
 @SpringBootTest
 internal class ArticleServiceImplTest {
