@@ -2,6 +2,7 @@ package com.learnkotlin.kotlinspring.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -12,7 +13,22 @@ class InterceptorConfig : WebMvcConfigurer {
         return AuthenticationHandler()
     }
 
+    @Bean
+    fun userInfoHandler(): UserInfoHandler {
+        return UserInfoHandler()
+    }
+
+    @Bean
+    fun fromTokenArgumentResolver(): FromTokenArgumentResolver {
+        return FromTokenArgumentResolver()
+    }
+
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(authenticationHandler()).addPathPatterns("/**")
+        registry.addInterceptor(userInfoHandler()).addPathPatterns("/**")
+    }
+
+    override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+        resolvers.add(fromTokenArgumentResolver())
     }
 }
