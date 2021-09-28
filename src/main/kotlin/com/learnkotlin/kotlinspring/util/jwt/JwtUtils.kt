@@ -81,4 +81,14 @@ class JwtUtils {
         val jwt = JWT.decode(token)
         return jwt.audience[0].toInt()
     }
+
+    /**
+     * 获得token中的信息无需secret解密也能获得
+     *
+     * @return token中包含的用户 isLocked
+     */
+    fun getIsLocked(token: String): Boolean {
+        val jwt = JWT.decode(token)
+        return jwt.getClaim("isLocked").asBoolean()
+    }
 }
