@@ -5,7 +5,6 @@ import com.learnkotlin.kotlinspring.exceptions.WrongCredentialException
 import com.learnkotlin.kotlinspring.service.impl.UserServiceImpl
 import com.learnkotlin.kotlinspring.util.ResultVO
 import com.learnkotlin.kotlinspring.util.StatusOK
-import com.learnkotlin.kotlinspring.util.WrongCredentialException
 import com.learnkotlin.kotlinspring.util.annotations.NeedAuthorized
 import com.learnkotlin.kotlinspring.util.jwt.JwtUtils
 import org.slf4j.LoggerFactory
