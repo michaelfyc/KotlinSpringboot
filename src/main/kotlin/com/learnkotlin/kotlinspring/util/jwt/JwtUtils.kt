@@ -25,6 +25,7 @@ class JwtUtils {
         // 附带username信息
         return JWT.create()
             .withAudience(user.uid.toString())
+            .withClaim("uid", user.uid)
             .withClaim("username", user.username)
             .withClaim("email", user.email)
             .withClaim("isLocked", user.isLocked)
