@@ -1,7 +1,7 @@
 package com.learnkotlin.kotlinspring.config
 
-import com.learnkotlin.kotlinspring.util.BadRequestException
-import com.learnkotlin.kotlinspring.util.CommonExceptions
+import com.learnkotlin.kotlinspring.exceptions.BadRequestException
+import com.learnkotlin.kotlinspring.exceptions.CommonExceptions
 import com.learnkotlin.kotlinspring.util.ResultVO
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler

@@ -1,7 +1,7 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
-import com.learnkotlin.kotlinspring.util.DuplicatedEmailException
+import com.learnkotlin.kotlinspring.exceptions.DuplicatedEmailException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

@@ -5,9 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.exceptions.TokenExpiredException
+import com.learnkotlin.kotlinspring.exceptions.InvalidTokenException
+import com.learnkotlin.kotlinspring.exceptions.WrongCredentialException
 import com.learnkotlin.kotlinspring.service.impl.UserServiceImpl
-import com.learnkotlin.kotlinspring.util.InvalidTokenException
-import com.learnkotlin.kotlinspring.util.WrongCredentialException
 import com.learnkotlin.kotlinspring.util.annotations.NeedAuthorized
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +28,8 @@ class AuthenticationHandler : HandlerInterceptor {
         }
         val methods = handler.method
         if (methods.isAnnotationPresent(NeedAuthorized::class.java)) {
-            val auth = request.getHeader("Authorization") ?: throw InvalidTokenException(message = "please sign in first to visit")
+            val auth = request.getHeader("Authorization")
+                ?: throw InvalidTokenException(message = "please sign in first to visit")
             var token = auth
             if (auth.startsWith("Bearer ")) {
                 token = auth.substring(7, auth.length)
@@ -44,7 +45,7 @@ class AuthenticationHandler : HandlerInterceptor {
             try {
                 verifier.verify(token)
             } catch (e: TokenExpiredException) {
-                throw InvalidTokenException(message = "token expired")
+                throw com.learnkotlin.kotlinspring.exceptions.TokenExpiredException(message = "token expired")
             } catch (e: JWTVerificationException) {
                 throw RuntimeException("token invalid")
             }

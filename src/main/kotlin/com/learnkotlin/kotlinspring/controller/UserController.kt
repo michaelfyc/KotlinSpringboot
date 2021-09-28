@@ -1,6 +1,7 @@
 package com.learnkotlin.kotlinspring.controller
 
 import com.learnkotlin.kotlinspring.entity.User
+import com.learnkotlin.kotlinspring.exceptions.WrongCredentialException
 import com.learnkotlin.kotlinspring.service.impl.UserServiceImpl
 import com.learnkotlin.kotlinspring.util.ResultVO
 import com.learnkotlin.kotlinspring.util.StatusOK

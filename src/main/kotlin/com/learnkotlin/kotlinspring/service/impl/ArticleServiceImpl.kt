@@ -1,10 +1,10 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.Article
+import com.learnkotlin.kotlinspring.exceptions.BadRequestException
 import com.learnkotlin.kotlinspring.mapper.ArticleMapper
 import com.learnkotlin.kotlinspring.mapper.UserMapper
 import com.learnkotlin.kotlinspring.service.IArticleService
-import com.learnkotlin.kotlinspring.util.BadRequestException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

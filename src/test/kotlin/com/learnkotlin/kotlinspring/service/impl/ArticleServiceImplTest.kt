@@ -1,7 +1,7 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.Article
-import com.learnkotlin.kotlinspring.util.BadRequestException
+import com.learnkotlin.kotlinspring.exceptions.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
