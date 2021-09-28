@@ -1,5 +1,7 @@
 package com.learnkotlin.kotlinspring.config
 
+import com.learnkotlin.kotlinspring.util.BadRequestException
+import com.learnkotlin.kotlinspring.util.CommonExceptions
 import com.learnkotlin.kotlinspring.util.ResultVO
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -14,6 +16,11 @@ class ExceptionHandlers {
     fun invalidMethodParameterExceptionHandler(e: MethodArgumentNotValidException): ResultVO<Any> {
         val fieldErrors = e.bindingResult.fieldErrors
         val errorMessages = fieldErrors.map { it.defaultMessage }.toList().joinToString(";")
-        return ResultVO(code = 4001, data = null, message = errorMessages)
+        return ResultVO(BadRequestException(message = errorMessages))
+    }
+
+    @ExceptionHandler(value = [CommonExceptions::class])
+    fun commonExceptionHandler(e: CommonExceptions): ResultVO<Any> {
+        return ResultVO(e)
     }
 }
