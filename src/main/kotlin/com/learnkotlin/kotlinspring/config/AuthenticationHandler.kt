@@ -30,10 +30,7 @@ class AuthenticationHandler : HandlerInterceptor {
         if (methods.isAnnotationPresent(NeedAuthorized::class.java)) {
             val auth = request.getHeader("Authorization")
                 ?: throw InvalidTokenException(message = "please sign in first to visit")
-            var token = auth
-            if (auth.startsWith("Bearer ")) {
-                token = auth.substring(7, auth.length)
-            }
+            val token = auth.replace("Bearer ", "")
             val uid: Int
             try {
                 uid = JWT.decode(token).audience[0].toInt()
