@@ -39,13 +39,7 @@ class UserController {
         val userByEmail = userServiceImpl.getUserByEmail(email)
         if (userByEmail != null) {
             if (userByEmail.password == password && !userByEmail.isLocked) {
-                val token = JwtUtils()
-                    .sign(
-                        uid = userByEmail.uid,
-                        email = userByEmail.email,
-                        username = userByEmail.username,
-                        secret = userByEmail.password
-                    )
+                val token = JwtUtils().sign(userByEmail)
                 return ResultVO(StatusOK("login successfully"), mapOf("token" to token))
             }
         }
