@@ -19,6 +19,11 @@ class ExceptionHandlers {
         return ResultVO(BadRequestException(message = errorMessages))
     }
 
+    @ExceptionHandler(value = [IllegalArgumentException::class])
+    fun illegalArgumentExceptionHandler(e: IllegalArgumentException): ResultVO<Any> {
+        return ResultVO(BadRequestException(message = e.message!!))
+    }
+
     @ExceptionHandler(value = [CommonExceptions::class])
     fun commonExceptionHandler(e: CommonExceptions): ResultVO<Any> {
         return ResultVO(e)
