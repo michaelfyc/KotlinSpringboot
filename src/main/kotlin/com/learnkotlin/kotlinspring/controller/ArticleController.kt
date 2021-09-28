@@ -5,6 +5,7 @@ import com.learnkotlin.kotlinspring.service.impl.ArticleServiceImpl
 import com.learnkotlin.kotlinspring.util.ResultVO
 import com.learnkotlin.kotlinspring.util.StatusNotFound
 import com.learnkotlin.kotlinspring.util.StatusOK
+import com.learnkotlin.kotlinspring.util.annotations.FromToken
 import com.learnkotlin.kotlinspring.util.annotations.NeedAuthorized
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +26,8 @@ class ArticleController {
 
     @PostMapping("/createPost")
     @NeedAuthorized
-    fun createArticle(@Valid @RequestBody article: Article): ResultVO<Any> {
+    fun createArticle(@Valid @RequestBody article: Article, @FromToken("uid") uid: Int): ResultVO<Any> {
+        article.authorId = uid
         logger.info("<ArticleController.createArticle>article:$article")
         val articleId = articleServiceImpl.createArticle(article)
         return ResultVO(StatusOK("create post successfully"), articleId)
