@@ -47,7 +47,7 @@ class AuthenticationHandler : HandlerInterceptor {
             } catch (e: TokenExpiredException) {
                 throw com.learnkotlin.kotlinspring.exceptions.TokenExpiredException(message = "token expired")
             } catch (e: JWTVerificationException) {
-                throw RuntimeException("token invalid")
+                throw InvalidTokenException(message = "token invalid")
             }
             return true
         }
