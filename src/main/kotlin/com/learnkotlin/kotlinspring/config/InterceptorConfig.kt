@@ -14,18 +14,12 @@ class InterceptorConfig : WebMvcConfigurer {
     }
 
     @Bean
-    fun userInfoHandler(): UserInfoHandler {
-        return UserInfoHandler()
-    }
-
-    @Bean
     fun fromTokenArgumentResolver(): FromTokenArgumentResolver {
         return FromTokenArgumentResolver()
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(authenticationHandler()).addPathPatterns("/**")
-        registry.addInterceptor(userInfoHandler()).addPathPatterns("/**")
     }
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
