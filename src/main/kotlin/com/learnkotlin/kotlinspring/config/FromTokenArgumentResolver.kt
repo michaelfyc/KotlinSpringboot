@@ -1,7 +1,7 @@
 package com.learnkotlin.kotlinspring.config
 
 import com.learnkotlin.kotlinspring.entity.User
-import com.learnkotlin.kotlinspring.exceptions.InvalidTokenException
+import com.learnkotlin.kotlinspring.exceptions.TokenClaimNotFoundException
 import com.learnkotlin.kotlinspring.util.annotations.FromToken
 import com.learnkotlin.kotlinspring.util.jwt.JwtUtils
 import org.springframework.core.MethodParameter
@@ -38,20 +38,13 @@ class FromTokenArgumentResolver : HandlerMethodArgumentResolver {
 // getCastedClaim 获取 claim 并进行类型转换
 fun getCastedClaim(field: String, token: String): Any {
     val jwtUtils = JwtUtils()
-    val result =
-        when (field) {
-            "uid" -> jwtUtils.getUid(token)
-            "email" -> jwtUtils.getEmail(token)
-            "username" -> jwtUtils.getUsername(token)
-            "isLocked" -> jwtUtils.getIsLocked(token)
-            "all" -> {
-                val uid = jwtUtils.getUid(token)
-                val email = jwtUtils.getEmail(token)
-                val username = jwtUtils.getUsername(token)
-                val isLocked = jwtUtils.getIsLocked(token)
-                User(uid = uid, email = email, username = username, isLocked = isLocked, password = "")
-            }
-            else -> throw InvalidTokenException(message = "No such field in token")
-        }
-    return result
+    val uid = jwtUtils.getUid(token)
+    val email = jwtUtils.getEmail(token)
+    val username = jwtUtils.getUsername(token)
+    val isLocked = jwtUtils.getIsLocked(token)
+    val user = User(uid = uid, email = email, username = username, isLocked = isLocked, password = "")
+    val typeMap: Map<String, Any> =
+        mapOf("uid" to uid, "email" to email, "username" to username, "isLocked" to isLocked, "all" to user)
+    return typeMap[field]
+        ?: throw TokenClaimNotFoundException(message = "no such field $field in token")
 }
