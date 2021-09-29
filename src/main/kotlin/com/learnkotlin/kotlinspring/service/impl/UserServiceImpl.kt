@@ -1,9 +1,9 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
+import com.learnkotlin.kotlinspring.exceptions.DuplicatedEmailException
 import com.learnkotlin.kotlinspring.mapper.UserMapper
 import com.learnkotlin.kotlinspring.service.IUserService
-import com.learnkotlin.kotlinspring.util.DuplicationEmailException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
@@ -33,7 +33,7 @@ class UserServiceImpl : IUserService {
             userMapper.insert(user)
             status = user.uid
         } catch (e: DuplicateKeyException) {
-            throw DuplicationEmailException()
+            throw DuplicatedEmailException()
         } catch (e: Exception) {
             throw e
         }

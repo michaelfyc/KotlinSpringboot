@@ -1,7 +1,7 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
-import com.learnkotlin.kotlinspring.util.DuplicationEmailException
+import com.learnkotlin.kotlinspring.exceptions.DuplicatedEmailException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -41,7 +41,7 @@ internal class UserServiceImplTest {
             status = userServiceImpl.createUser(userAndy)
         } catch (e: Exception) {
             assertEquals(-1, status)
-            assertTrue(e is DuplicationEmailException)
+            assertTrue(e is DuplicatedEmailException)
         }
     }
 

@@ -2,13 +2,18 @@ package com.learnkotlin.kotlinspring.controller
 
 import com.learnkotlin.kotlinspring.entity.Article
 import com.learnkotlin.kotlinspring.service.impl.ArticleServiceImpl
-import com.learnkotlin.kotlinspring.util.BadRequestException
 import com.learnkotlin.kotlinspring.util.ResultVO
 import com.learnkotlin.kotlinspring.util.StatusNotFound
 import com.learnkotlin.kotlinspring.util.StatusOK
+import com.learnkotlin.kotlinspring.util.annotations.FromToken
+import com.learnkotlin.kotlinspring.util.annotations.NeedAuthorized
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
@@ -20,7 +25,9 @@ class ArticleController {
     private lateinit var articleServiceImpl: ArticleServiceImpl
 
     @PostMapping("/createPost")
-    fun createArticle(@Valid @RequestBody article: Article): ResultVO<Any> {
+    @NeedAuthorized
+    fun createArticle(@Valid @RequestBody article: Article, @FromToken("uid") uid: Int): ResultVO<Any> {
+        article.authorId = uid
         logger.info("<ArticleController.createArticle>article:$article")
         val articleId = articleServiceImpl.createArticle(article)
         return ResultVO(StatusOK("create post successfully"), articleId)
@@ -29,11 +36,7 @@ class ArticleController {
     @GetMapping("/articles")
     fun listArticleByAuthorId(authorId: Int): ResultVO<Any> {
         logger.info("<ArticleController.listArticleByAuthorId>authorId:$authorId")
-        val articles = try {
-            articleServiceImpl.listArticleByAuthorId(authorId)
-        } catch (e: BadRequestException) {
-            return ResultVO(e)
-        }
+        val articles = articleServiceImpl.listArticleByAuthorId(authorId)
         return ResultVO(StatusOK(), articles)
     }
 
