@@ -12,6 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer
 import javax.servlet.http.HttpServletRequest
 import kotlin.IllegalArgumentException
 
+// Get claim from token and inject into parameter annotated by @FromToken
 class FromTokenArgumentResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(methodParameter: MethodParameter): Boolean {
         return methodParameter.hasParameterAnnotation(FromToken::class.java)
@@ -29,7 +30,7 @@ class FromTokenArgumentResolver : HandlerMethodArgumentResolver {
 
         val authHeader = request.getHeader("authorization")
         val token = authHeader.replace("Bearer ", "")
-        // fetch field from @FromToken(field) 
+        // fetch field from @FromToken member variable 'field'
         val field = fromToken.field
         return getCastedClaim(field, token)
     }
