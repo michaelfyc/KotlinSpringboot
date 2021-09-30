@@ -37,16 +37,17 @@ class JwtUtils {
      * 校验token是否正确
      *
      * @param token  密钥
-     * @param secret 用户的密码
+     * @param user 用户对象
      * @return 是否正确
      */
-    fun verify(token: String, uid: Int, email: String, username: String, secret: String, isLocked: Boolean): Boolean {
-        val algorithm: Algorithm = Algorithm.HMAC256(secret)
+    fun verify(token: String, user: User): Boolean {
+        val algorithm: Algorithm = Algorithm.HMAC256(user.password)
         val verifier: JWTVerifier = JWT.require(algorithm)
-            .withAudience(uid.toString())
-            .withClaim("username", username)
-            .withClaim("email", email)
-            .withClaim("isLocked", isLocked)
+            .withAudience(user.uid.toString())
+            .withClaim("uid", user.uid)
+            .withClaim("username", user.username)
+            .withClaim("email", user.email)
+            .withClaim("isLocked", user.isLocked)
             .build()
         verifier.verify(token)
         return true
