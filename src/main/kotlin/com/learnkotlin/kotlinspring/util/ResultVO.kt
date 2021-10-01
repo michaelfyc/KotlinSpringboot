@@ -2,8 +2,11 @@ package com.learnkotlin.kotlinspring.util
 
 import com.learnkotlin.kotlinspring.exceptions.CommonExceptions
 
-open class ResultVO<T : Any?>(var code: Int, var data: T?, var message: String) {
-    constructor(status: Status, data: T? = null) : this(code = status.code, message = status.message, data = data)
+/**
+ * ResultVO wraps response in standardized json format
+ */
+open class ResultVO(var code: Int, var data: Any?, var message: String) {
+    constructor(status: Status, data: Any? = null) : this(code = status.code, message = status.message, data = data)
 
     constructor(commonExceptions: CommonExceptions) : this(
         code = commonExceptions.code,
