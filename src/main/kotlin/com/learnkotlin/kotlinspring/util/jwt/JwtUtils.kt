@@ -3,15 +3,17 @@ package com.learnkotlin.kotlinspring.util.jwt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.learnkotlin.kotlinspring.entity.User
+import com.learnkotlin.kotlinspring.enums.CommonRoles
 import org.slf4j.LoggerFactory
 import java.util.Date
 
-class JwtUtils {
+object JwtUtils {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     // 过期时间5分钟
-    private val expireTime = (5 * 60 * 1000).toLong()
+    private const val expireTime = (5 * 60 * 1000).toLong()
 
     /**
      * 生成签名,5min后过期
@@ -19,7 +21,7 @@ class JwtUtils {
      * @param user 用户
      * @return 加密的token
      */
-    fun sign(user: User): String? {
+    fun sign(user: User): String {
         val date = Date(System.currentTimeMillis() + expireTime)
         val algorithm: Algorithm = Algorithm.HMAC256(user.password)
         // 附带username信息
@@ -29,6 +31,7 @@ class JwtUtils {
             .withClaim("username", user.username)
             .withClaim("email", user.email)
             .withClaim("isLocked", user.isLocked)
+            .withClaim("role", jacksonObjectMapper().writeValueAsString(user.role))
             .withExpiresAt(date)
             .sign(algorithm)
     }
@@ -48,6 +51,7 @@ class JwtUtils {
             .withClaim("username", user.username)
             .withClaim("email", user.email)
             .withClaim("isLocked", user.isLocked)
+            .withClaim("role", jacksonObjectMapper().writeValueAsString(user.role))
             .build()
         verifier.verify(token)
         return true
@@ -91,5 +95,16 @@ class JwtUtils {
     fun getIsLocked(token: String): Boolean {
         val jwt = JWT.decode(token)
         return jwt.getClaim("isLocked").asBoolean()
+    }
+
+    /**
+     * 获得token中的信息无需secret解密也能获得
+     *
+     * @return token中包含的用户 role
+     */
+    fun getRole(token: String): CommonRoles {
+        val jwt = JWT.decode(token)
+        val jsonRole = jwt.getClaim("role").asString()
+        return jacksonObjectMapper().readValue(jsonRole, CommonRoles::class.java)
     }
 }
