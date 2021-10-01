@@ -44,8 +44,16 @@ fun getCastedClaim(field: String, token: String): Any {
     val isLocked = JwtUtils.getIsLocked(token)
     val role = JwtUtils.getRole(token)
     val user = User(uid = uid, email = email, username = username, isLocked = isLocked, password = "")
+    user.role = role
     val typeMap: Map<String, Any> =
-        mapOf("uid" to uid, "email" to email, "username" to username, "isLocked" to isLocked, "all" to user)
+        mapOf(
+            "uid" to uid,
+            "email" to email,
+            "username" to username,
+            "isLocked" to isLocked,
+            "role" to role,
+            "all" to user
+        )
     return typeMap[field]
         ?: throw TokenClaimNotFoundException(message = "no such field $field in token")
 }
