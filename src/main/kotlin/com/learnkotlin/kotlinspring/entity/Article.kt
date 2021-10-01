@@ -21,5 +21,5 @@ data class Article @AutomapConstructor constructor(
     @TableField("create_at")
     val createAt: LocalDateTime = LocalDateTime.now(),
     @TableField("is_visible")
-    var isVisible: Boolean? = true
+    var isVisible: Boolean = true
 )

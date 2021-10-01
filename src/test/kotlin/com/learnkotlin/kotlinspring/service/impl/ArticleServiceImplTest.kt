@@ -93,7 +93,7 @@ internal class ArticleServiceImplTest {
 
     @Test
     @Transactional
-    fun getArticleByArticleId_0() {
+    fun testGetArticleByArticleId_0() {
         // 查询不存在的 articleId
         val nonexistentArticleId = 999
         val article = articleServiceImpl.getArticleByArticleId(nonexistentArticleId)
@@ -102,11 +102,33 @@ internal class ArticleServiceImplTest {
 
     @Test
     @Transactional
-    fun getArticleByArticleId_1() {
+    fun testGetArticleByArticleId_1() {
         // 查询存在的 articleId
         val articleId = articleServiceImpl.createArticle(article)
         val article = articleServiceImpl.getArticleByArticleId(articleId)
         assertNotNull(article)
         // 其余已在 testCreateArticle 验证过,省略
+    }
+
+    @Test
+    @Transactional
+    fun testSetVisibilityByAuthorId_0() {
+        // 隐藏以后是看不到的
+        val articleId = articleServiceImpl.createArticle(article)
+        articleServiceImpl.setVisibilityByArticleId(articleId, false)
+        val articleAfterUpdate = articleServiceImpl.getArticleByArticleId(articleId)
+        assertNull(articleAfterUpdate)
+    }
+
+    @Test
+    @Transactional
+    fun testSetVisibilityByAuthorId_1() {
+        // 解除隐藏就能看到
+        article.isVisible = false
+        val articleId = articleServiceImpl.createArticle(article)
+        articleServiceImpl.setVisibilityByArticleId(articleId, true)
+        val articleAfterUpdate = articleServiceImpl.getArticleByArticleId(articleId)
+        assertNotNull(articleAfterUpdate)
+        assertEquals(article.title, articleAfterUpdate?.title)
     }
 }

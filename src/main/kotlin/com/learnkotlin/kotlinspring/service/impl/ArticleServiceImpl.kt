@@ -36,4 +36,9 @@ class ArticleServiceImpl : IArticleService {
         logger.info("<ArticleServiceImpl.getArticleByArticleId>articleId: $articleId")
         return articleMapper.getArticleByArticleId(articleId)
     }
+
+    override fun setVisibilityByArticleId(articleId: Int, isVisible: Boolean) {
+        logger.info("<ArticleServiceImpl.setVisibilityByArticleId>articleId: $articleId")
+        return articleMapper.setVisibilityByArticleId(articleId, isVisible)
+    }
 }

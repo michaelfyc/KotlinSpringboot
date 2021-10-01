@@ -54,4 +54,14 @@ class ArticleController {
             articleServiceImpl.getArticleByArticleId(articleId) ?: return ResultVO(StatusNotFound("article not found"))
         return ResultVO(StatusOK(), article)
     }
+
+    @PostMapping("/hide")
+    fun setVisibilityByArticleId(@RequestBody isVisible: Boolean, articleId: Int): ResultVO {
+        require(articleId > 0) {
+            throw BadRequestException()
+        }
+        logger.info("<ArticleController.setVisibilityByArticleId>articleId:$articleId")
+        articleServiceImpl.setVisibilityByArticleId(articleId, isVisible)
+        return ResultVO(StatusOK("successfully set article $articleId visibility to $isVisible"))
+    }
 }
