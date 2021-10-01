@@ -26,17 +26,19 @@ class UserController {
     fun register(@Valid @RequestBody user: User): ResultVO {
         logger.info("Registering:${user.email} ${user.username} ${user.password}")
         val uid = userServiceImpl.createUser(user)
+        logger.info("${user.email} signing up as ${user.role} successfully")
         return ResultVO(StatusOK("sign up successfully"), mapOf("uid" to uid))
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody user: User): ResultVO {
+    fun login(@Valid @RequestBody user: User): ResultVO {
         val email = user.email
         val password = user.password
         logger.info("Signing in:${user.email} ${user.password}")
         val userByEmail = userServiceImpl.getUserByEmail(email)
         if (userByEmail?.password == password && !userByEmail.isLocked) {
             val token = JwtUtils.sign(userByEmail)
+            logger.info("${user.email} signed in as ${user.role} successfully")
             return ResultVO(StatusOK("login successfully"), mapOf("token" to token))
         }
         return ResultVO(WrongCredentialException())
