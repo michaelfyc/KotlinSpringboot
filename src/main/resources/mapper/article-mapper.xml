@@ -15,4 +15,9 @@
         WHERE `author_id` = #{authorId}
           and `is_visible` = true
     </select>
+    <update id="setVisibilityByArticleId">
+        UPDATE article
+        SET `is_visible` = #{isVisible}
+        WHERE `article_id` = #{articleId}
+    </update>
 </mapper>

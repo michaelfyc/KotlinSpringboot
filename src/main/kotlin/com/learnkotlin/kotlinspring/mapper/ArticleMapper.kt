@@ -9,4 +9,6 @@ interface ArticleMapper : BaseMapper<Article> {
     fun getArticleByArticleId(articleId: Int): Article?
 
     fun listArticleByAuthorId(authorId: Int): ArrayList<Article>?
+
+    fun setVisibilityByArticleId(articleId: Int, visibility: Boolean)
 }
