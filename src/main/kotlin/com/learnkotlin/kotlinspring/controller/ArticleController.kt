@@ -26,7 +26,7 @@ class ArticleController {
 
     @PostMapping("/createPost")
     @NeedAuthorized
-    fun createArticle(@Valid @RequestBody article: Article, @FromToken("uid") uid: Int): ResultVO<Any> {
+    fun createArticle(@Valid @RequestBody article: Article, @FromToken("uid") uid: Int): ResultVO {
         article.authorId = uid
         logger.info("<ArticleController.createArticle>article:$article")
         val articleId = articleServiceImpl.createArticle(article)
@@ -34,14 +34,14 @@ class ArticleController {
     }
 
     @GetMapping("/articles")
-    fun listArticleByAuthorId(authorId: Int): ResultVO<Any> {
+    fun listArticleByAuthorId(authorId: Int): ResultVO {
         logger.info("<ArticleController.listArticleByAuthorId>authorId:$authorId")
         val articles = articleServiceImpl.listArticleByAuthorId(authorId)
         return ResultVO(StatusOK(), articles)
     }
 
     @GetMapping("/article")
-    fun getArticleByArticleId(articleId: Int): ResultVO<Any> {
+    fun getArticleByArticleId(articleId: Int): ResultVO {
         logger.info("<ArticleController.getArticleByArticleId>articleId:$articleId")
         val article =
             articleServiceImpl.getArticleByArticleId(articleId) ?: return ResultVO(StatusNotFound("article not found"))
