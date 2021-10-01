@@ -20,9 +20,6 @@ class ArticleServiceImpl : IArticleService {
     private lateinit var articleMapper: ArticleMapper
 
     override fun listArticleByAuthorId(authorId: Int): ArrayList<Article>? {
-        check(authorId > 0) {
-            throw BadRequestException()
-        }
         // first, see if author exists
         userMapper.selectById(authorId) ?: throw BadRequestException()
         // then, fetch all visible articles by author
@@ -36,9 +33,6 @@ class ArticleServiceImpl : IArticleService {
     }
 
     override fun getArticleByArticleId(articleId: Int): Article? {
-        check(articleId > 0) {
-            throw BadRequestException()
-        }
         logger.info("<ArticleServiceImpl.getArticleByArticleId>articleId: $articleId")
         return articleMapper.getArticleByArticleId(articleId)
     }
