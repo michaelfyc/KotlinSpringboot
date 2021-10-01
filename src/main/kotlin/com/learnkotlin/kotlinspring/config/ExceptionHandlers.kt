@@ -13,7 +13,7 @@ class ExceptionHandlers {
      * Handle Hibernate Validation Exceptions
      */
     @ExceptionHandler(value = [MethodArgumentNotValidException::class])
-    fun invalidMethodParameterExceptionHandler(e: MethodArgumentNotValidException): ResultVO<Any> {
+    fun invalidMethodParameterExceptionHandler(e: MethodArgumentNotValidException): ResultVO {
         e.printStackTrace()
         val fieldErrors = e.bindingResult.fieldErrors
         val errorMessages = fieldErrors.map { it.defaultMessage }.toList().joinToString(";")
@@ -21,13 +21,13 @@ class ExceptionHandlers {
     }
 
     @ExceptionHandler(value = [IllegalArgumentException::class])
-    fun illegalArgumentExceptionHandler(e: IllegalArgumentException): ResultVO<Any> {
+    fun illegalArgumentExceptionHandler(e: IllegalArgumentException): ResultVO {
         e.printStackTrace()
         return ResultVO(BadRequestException(message = e.message!!))
     }
 
     @ExceptionHandler(value = [CommonExceptions::class])
-    fun commonExceptionHandler(e: CommonExceptions): ResultVO<Any> {
+    fun commonExceptionHandler(e: CommonExceptions): ResultVO {
         e.printStackTrace()
         return ResultVO(e)
     }
