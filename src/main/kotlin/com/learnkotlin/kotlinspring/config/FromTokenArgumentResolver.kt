@@ -23,12 +23,12 @@ class FromTokenArgumentResolver : HandlerMethodArgumentResolver {
         modelAndViewContainer: ModelAndViewContainer?,
         nativeWebRequest: NativeWebRequest,
         webDataBinderFactory: WebDataBinderFactory?
-    ): Any {
+    ): Any? {
         val request = nativeWebRequest.nativeRequest as HttpServletRequest
         val fromToken = methodParameter.getParameterAnnotation(FromToken::class.java)
             ?: throw IllegalArgumentException("FromToken Annotation cannot resolve ${methodParameter.parameterType.name}")
 
-        val authHeader = request.getHeader("authorization")
+        val authHeader = request.getHeader("authorization") ?: return null
         val token = authHeader.replace("Bearer ", "")
         // fetch field from @FromToken member variable 'field'
         val field = fromToken.field

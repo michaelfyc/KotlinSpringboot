@@ -1,6 +1,7 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.Article
+import com.learnkotlin.kotlinspring.enums.CommonRoles
 import com.learnkotlin.kotlinspring.exceptions.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -59,11 +60,37 @@ internal class ArticleServiceImplTest {
 
     @Test
     @Transactional
+    fun testListArticles_0() {
+        val articles = articleServiceImpl.listArticles(CommonRoles.GUEST)
+        assertEquals(0, articles.size)
+    }
+
+    @Test
+    @Transactional
+    fun testListArticles_1() {
+        val articleId = articleServiceImpl.createArticle(article)
+        assertTrue(articleId > 0)
+        val articles = articleServiceImpl.listArticles(CommonRoles.GUEST)
+        assertEquals(0, articles.size)
+    }
+
+    @Test
+    @Transactional
+    fun testListArticles_2() {
+        article.rid = 2
+        val articleId = articleServiceImpl.createArticle(article)
+        assertTrue(articleId > 0)
+        val articles = articleServiceImpl.listArticles(CommonRoles.GUEST)
+        assertEquals(0, articles.size)
+    }
+
+    @Test
+    @Transactional
     fun testListArticleByAuthorId_0() {
         // 查询不存在的用户的文章
         assertThrows<BadRequestException> {
             val articles = articleServiceImpl.listArticleByAuthorId(nonexistentAuthorId)
-            assertNull(articles)
+            assertEquals(0, articles.size)
         }
     }
 
@@ -72,7 +99,7 @@ internal class ArticleServiceImplTest {
     fun testListArticleByAuthorId_1() {
         // 查询存在的用户，但是没有创建文章
         val articles = articleServiceImpl.listArticleByAuthorId(existentAuthorId)
-        assertNotNull(articles!!)
+        assertNotNull(articles)
         assertEquals(0, articles.size)
     }
 
@@ -84,7 +111,7 @@ internal class ArticleServiceImplTest {
         assertTrue(articleId > 0)
         val articles = articleServiceImpl.listArticleByAuthorId(existentAuthorId)
         assertNotNull(articles)
-        assertEquals(1, articles!!.size)
+        assertEquals(1, articles.size)
         val articleByAuthor = articles[0]
         assertEquals(article.title, articleByAuthor.title)
         assertEquals(article.content, articleByAuthor.content)
@@ -113,22 +140,16 @@ internal class ArticleServiceImplTest {
     @Test
     @Transactional
     fun testSetVisibilityByAuthorId_0() {
-        // 隐藏以后是看不到的
+        // default access role: Guest
         val articleId = articleServiceImpl.createArticle(article)
-        articleServiceImpl.setVisibilityByArticleId(articleId, false)
-        val articleAfterUpdate = articleServiceImpl.getArticleByArticleId(articleId)
-        assertNull(articleAfterUpdate)
-    }
-
-    @Test
-    @Transactional
-    fun testSetVisibilityByAuthorId_1() {
-        // 解除隐藏就能看到
-        article.isVisible = false
-        val articleId = articleServiceImpl.createArticle(article)
-        articleServiceImpl.setVisibilityByArticleId(articleId, true)
-        val articleAfterUpdate = articleServiceImpl.getArticleByArticleId(articleId)
-        assertNotNull(articleAfterUpdate)
-        assertEquals(article.title, articleAfterUpdate?.title)
+        articleServiceImpl.setArticleAccessibleRole(articleId, CommonRoles.USER)
+        val articleAccessByGuest = articleServiceImpl.getArticleByArticleId(articleId)
+        // guest cannot see the article
+        assertNull(articleAccessByGuest)
+        val articleAccessByAdmin = articleServiceImpl.getArticleByArticleId(articleId, CommonRoles.ADMIN)
+        // admin can see role user
+        assertNotNull(articleAccessByAdmin!!)
+        assertEquals(article.title, articleAccessByAdmin.title)
+        assertEquals(article.content, articleAccessByAdmin.content)
     }
 }
