@@ -3,12 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.learnkotlin.kotlinspring.mapper.UserMapper">
-    <insert id="batchCreateUser" parameterType="java.util.HashSet">
-        INSERT INTO user(`username`,`password`,`is_locked`) VALUES
-        <foreach collection="users" separator="," item="user">
-            (#{user.username},#{user.password},#{user.isLocked})
-        </foreach>
+    <insert id="assignRole">
+        INSERT INTO `user_role`(uid, rid) VALUE (#{uid},#{role.rid})
     </insert>
+    <update id="setUserRole">
+        UPDATE `user_role` SET rid = #{role.rid} WHERE uid = #{uid}
+    </update>
+    <select id="getUserRole" resultType="com.learnkotlin.kotlinspring.enums.CommonRoles">
+        SELECT `role`.`rid`,`role_name` FROM `role` JOIN `user_role` ON `role`.`rid` = `user_role`.`rid` WHERE `uid` = #{uid}
+    </select>
     <select id="getUserByEmail" parameterType="string" resultType="com.learnkotlin.kotlinspring.entity.User">
         SELECT *
         FROM user

@@ -38,14 +38,22 @@ class FromTokenArgumentResolver : HandlerMethodArgumentResolver {
 
 // getCastedClaim 获取 claim 并进行类型转换
 fun getCastedClaim(field: String, token: String): Any {
-    val jwtUtils = JwtUtils()
-    val uid = jwtUtils.getUid(token)
-    val email = jwtUtils.getEmail(token)
-    val username = jwtUtils.getUsername(token)
-    val isLocked = jwtUtils.getIsLocked(token)
+    val uid = JwtUtils.getUid(token)
+    val email = JwtUtils.getEmail(token)
+    val username = JwtUtils.getUsername(token)
+    val isLocked = JwtUtils.getIsLocked(token)
+    val role = JwtUtils.getRole(token)
     val user = User(uid = uid, email = email, username = username, isLocked = isLocked, password = "")
+    user.role = role
     val typeMap: Map<String, Any> =
-        mapOf("uid" to uid, "email" to email, "username" to username, "isLocked" to isLocked, "all" to user)
+        mapOf(
+            "uid" to uid,
+            "email" to email,
+            "username" to username,
+            "isLocked" to isLocked,
+            "role" to role,
+            "all" to user
+        )
     return typeMap[field]
         ?: throw TokenClaimNotFoundException(message = "no such field $field in token")
 }

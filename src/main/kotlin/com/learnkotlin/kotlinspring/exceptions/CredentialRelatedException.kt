@@ -5,3 +5,6 @@ open class CredentialRelatedException(override val code: Int = 403, override val
 
 class WrongCredentialException(override val code: Int = 403, override val message: String = "credential invalid") :
     CredentialRelatedException(code, message)
+
+class PermissionDeniedException(override val code: Int = 403, override val message: String = "permission denied") :
+    CredentialRelatedException(code, message)
