@@ -1,5 +1,7 @@
 package com.learnkotlin.kotlinspring.controller
 
+import com.github.pagehelper.PageHelper
+import com.github.pagehelper.PageInfo
 import com.learnkotlin.kotlinspring.entity.Article
 import com.learnkotlin.kotlinspring.enums.CommonRoles
 import com.learnkotlin.kotlinspring.exceptions.BadRequestException
@@ -24,10 +26,14 @@ import javax.validation.Valid
 class ArticleController {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 15
+    }
+
     @Autowired
     private lateinit var articleServiceImpl: ArticleServiceImpl
 
-    @PostMapping("/createPost")
+    @PostMapping("/createArticle")
     @NeedRole
     fun createArticle(@Valid @RequestBody article: Article, @FromToken("uid") uid: Int): ResultVO {
         article.authorId = uid
@@ -37,20 +43,46 @@ class ArticleController {
     }
 
     @GetMapping("/user/articles")
-    fun listArticleByAuthorId(@RequestParam("uid") authorId: Int): ResultVO {
-        require(authorId > 0) {
+    fun listArticleByAuthorId(
+        @RequestParam("uid") authorId: Int,
+        @RequestParam(required = false, defaultValue = "1") pageNum: Int,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE.toString()) pageSize: Int
+    ): ResultVO {
+        require(authorId > 0 && pageNum > 0 && pageSize > 0) {
             throw BadRequestException()
         }
         logger.info("<ArticleController.listArticleByAuthorId>authorId:$authorId")
+        PageHelper.startPage<Article>(pageNum, pageSize)
         val articles = articleServiceImpl.listArticleByAuthorId(authorId)
-        return ResultVO(StatusOK(), articles)
+        val articlesAfterPaging = PageInfo(articles)
+        val result = mapOf(
+            "articles" to articlesAfterPaging.list,
+            "current_page" to articlesAfterPaging.pageNum,
+            "total" to articlesAfterPaging.total,
+            "has_next_page" to articlesAfterPaging.isHasNextPage,
+            "has_previous_page" to articlesAfterPaging.isHasPreviousPage
+        )
+        return ResultVO(StatusOK(), result)
     }
 
     @GetMapping("/articles")
-    fun listArticles(@FromToken("role") role: CommonRoles?): ResultVO {
+    fun listArticles(
+        @FromToken("role") role: CommonRoles?,
+        @RequestParam(required = false, defaultValue = "1") pageNum: Int,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE.toString()) pageSize: Int
+    ): ResultVO {
         val userRole = role ?: CommonRoles.GUEST
+        PageHelper.startPage<Article>(pageNum, pageSize)
         val articles = articleServiceImpl.listArticles(userRole)
-        return ResultVO(StatusOK(), articles)
+        val articlesAfterPaging = PageInfo(articles)
+        val result = mapOf(
+            "articles" to articlesAfterPaging.list,
+            "current_page" to articlesAfterPaging.pageNum,
+            "total" to articlesAfterPaging.total,
+            "has_next_page" to articlesAfterPaging.isHasNextPage,
+            "has_previous_page" to articlesAfterPaging.isHasPreviousPage
+        )
+        return ResultVO(StatusOK(), result)
     }
 
     @GetMapping("/article")
