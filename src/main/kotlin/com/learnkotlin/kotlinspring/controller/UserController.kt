@@ -1,12 +1,11 @@
 package com.learnkotlin.kotlinspring.controller
 
 import com.learnkotlin.kotlinspring.entity.User
+import com.learnkotlin.kotlinspring.exceptions.WrongCredentialException
 import com.learnkotlin.kotlinspring.service.impl.UserServiceImpl
-import com.learnkotlin.kotlinspring.util.DuplicationEmailException
 import com.learnkotlin.kotlinspring.util.ResultVO
-import com.learnkotlin.kotlinspring.util.ServerException
 import com.learnkotlin.kotlinspring.util.StatusOK
-import com.learnkotlin.kotlinspring.util.WrongCredentialException
+import com.learnkotlin.kotlinspring.util.jwt.JwtUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,32 +20,26 @@ class UserController {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    lateinit var userServiceImpl: UserServiceImpl
+    private lateinit var userServiceImpl: UserServiceImpl
 
     @PostMapping("/register")
-    fun register(@Valid @RequestBody user: User): ResultVO<Any> {
+    fun register(@Valid @RequestBody user: User): ResultVO {
         logger.info("Registering:${user.email} ${user.username} ${user.password}")
-        val uid: Int
-        try {
-            uid = userServiceImpl.createUser(user)
-        } catch (e: DuplicationEmailException) {
-            return ResultVO(e)
-        } catch (e: Exception) {
-            return ResultVO(ServerException())
-        }
+        val uid = userServiceImpl.createUser(user)
+        logger.info("${user.email} signing up as ${user.role} successfully")
         return ResultVO(StatusOK("sign up successfully"), mapOf("uid" to uid))
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody user: User): ResultVO<Any> {
+    fun login(@Valid @RequestBody user: User): ResultVO {
         val email = user.email
         val password = user.password
         logger.info("Signing in:${user.email} ${user.password}")
         val userByEmail = userServiceImpl.getUserByEmail(email)
-        if (userByEmail != null) {
-            if (userByEmail.password == password && !userByEmail.isLocked) {
-                return ResultVO(StatusOK("login successfully"))
-            }
+        if (userByEmail?.password == password && !userByEmail.isLocked) {
+            val token = JwtUtils.sign(userByEmail)
+            logger.info("${user.email} signed in as ${user.role} successfully")
+            return ResultVO(StatusOK("login successfully"), mapOf("token" to token))
         }
         return ResultVO(WrongCredentialException())
     }

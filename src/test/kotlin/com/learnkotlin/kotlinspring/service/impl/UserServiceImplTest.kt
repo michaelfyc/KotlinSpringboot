@@ -1,7 +1,7 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
-import com.learnkotlin.kotlinspring.util.DuplicationEmailException
+import com.learnkotlin.kotlinspring.exceptions.DuplicatedEmailException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -17,31 +17,32 @@ internal class UserServiceImplTest {
 
     private val userJohn = User(username = "John", password = "123456", email = "john@example.com")
     private val userAndy = User(username = "Andy", password = "654321", email = "andy@example.com")
-    private val users = HashSet<User>()
-
-    init {
-        users.add(userAndy)
-        users.add(userJohn)
-    }
 
     @Autowired
     lateinit var userServiceImpl: UserServiceImpl
 
     @Test
     @Transactional
-    fun testCreateUser() {
+    fun testCreateUser_0() {
         userServiceImpl.createUser(userAndy)
         val newUser = userServiceImpl.getUserByEmail(userAndy.email)
         assertNotNull(newUser)
         assertEquals(userAndy.password, newUser?.password)
         assertEquals(userAndy.isLocked, newUser?.isLocked)
+        assertEquals(userAndy.role, newUser?.role)
+    }
+
+    @Test
+    @Transactional
+    fun testCreateUser_1() {
+        testCreateUser_0()
         // 重复插入
         var status = -1
         try {
             status = userServiceImpl.createUser(userAndy)
         } catch (e: Exception) {
             assertEquals(-1, status)
-            assertTrue(e is DuplicationEmailException)
+            assertTrue(e is DuplicatedEmailException)
         }
     }
 
@@ -55,6 +56,7 @@ internal class UserServiceImplTest {
         assertEquals(userAndy.email, user!!.email)
         assertEquals(userAndy.password, user.password)
         assertEquals(userAndy.isLocked, user.isLocked)
+        assertEquals(userAndy.role, user.role)
     }
 
     @Test

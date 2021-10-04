@@ -7,12 +7,22 @@
         SELECT *
         FROM article
         WHERE `article_id` = #{articleId}
-          and `is_visible` = true
+          AND `rid` >= #{role.rid}
     </select>
-    <select id="listArticleByAuthorId" resultType="com.learnkotlin.kotlinspring.entity.Article">
+    <select id="listArticles" resultType="com.learnkotlin.kotlinspring.entity.Article">
         SELECT *
         FROM article
-        WHERE `author_id` = #{authorId}
-          and `is_visible` = true
+        WHERE `rid` >= #{role.rid}
     </select>
+    <select id="listArticleByAuthorId" resultType="com.learnkotlin.kotlinspring.entity.Article">
+        SELECT `article_id`, `title`, `content`, `author_id`, `create_at`, `article`.`rid`
+        FROM article
+                 LEFT JOIN user_role ur ON ur.uid = #{authorId}
+        WHERE article.rid >= ur.rid
+    </select>
+    <update id="setArticleAccessibleRole">
+        UPDATE article
+        SET rid = #{role.rid}
+        WHERE `article_id` = #{articleId}
+    </update>
 </mapper>

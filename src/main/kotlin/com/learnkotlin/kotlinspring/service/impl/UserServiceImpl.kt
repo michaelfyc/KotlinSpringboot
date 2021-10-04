@@ -1,9 +1,10 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
+import com.learnkotlin.kotlinspring.enums.CommonRoles
+import com.learnkotlin.kotlinspring.exceptions.DuplicatedEmailException
 import com.learnkotlin.kotlinspring.mapper.UserMapper
 import com.learnkotlin.kotlinspring.service.IUserService
-import com.learnkotlin.kotlinspring.util.DuplicationEmailException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
@@ -18,29 +19,32 @@ class UserServiceImpl : IUserService {
 
     override fun getUserByUid(uid: Int): User? {
         logger.info("<UserServiceImpl.getUserByUid>Get user with uid:$uid")
-        return userMapper.selectById(uid)
+        val user = userMapper.selectById(uid)
+        user.role = userMapper.getUserRole(uid)
+        return user
     }
 
     override fun getUserByEmail(email: String): User? {
         logger.info("<UserServiceImpl.getUserByEmail>Get user with email:$email")
-        return userMapper.getUserByEmail(email)
+        val user = userMapper.getUserByEmail(email)
+        if (user != null) {
+            user.role = userMapper.getUserRole(user.uid)
+        }
+        return user
     }
 
-    override fun createUser(user: User): Int {
+    override fun createUser(user: User, role: CommonRoles): Int {
         logger.info("<UserServiceImpl.createUser>Create user ${user.username}")
         val status: Int
         try {
             userMapper.insert(user)
+            userMapper.assignRole(user.uid, role)
             status = user.uid
         } catch (e: DuplicateKeyException) {
-            throw DuplicationEmailException()
+            throw DuplicatedEmailException()
         } catch (e: Exception) {
             throw e
         }
         return status
-    }
-
-    override fun batchCreateUser(users: HashSet<User>) {
-        userMapper.batchCreateUser(users)
     }
 }

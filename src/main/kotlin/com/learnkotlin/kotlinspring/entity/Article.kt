@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableField
 import com.baomidou.mybatisplus.annotation.TableId
 import com.baomidou.mybatisplus.annotation.TableName
+import com.fasterxml.jackson.annotation.JsonFormat
 import org.apache.ibatis.annotations.AutomapConstructor
 import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
@@ -19,7 +20,8 @@ data class Article @AutomapConstructor constructor(
     @TableField("author_id")
     var authorId: Int,
     @TableField("create_at")
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss", timezone = "GMT+8")
     val createAt: LocalDateTime = LocalDateTime.now(),
-    @TableField("is_visible")
-    var isVisible: Boolean? = true
+    @TableField("rid")
+    var rid: Int = 4
 )

@@ -1,10 +1,11 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.Article
+import com.learnkotlin.kotlinspring.enums.CommonRoles
+import com.learnkotlin.kotlinspring.exceptions.BadRequestException
 import com.learnkotlin.kotlinspring.mapper.ArticleMapper
 import com.learnkotlin.kotlinspring.mapper.UserMapper
 import com.learnkotlin.kotlinspring.service.IArticleService
-import com.learnkotlin.kotlinspring.util.BadRequestException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -19,11 +20,11 @@ class ArticleServiceImpl : IArticleService {
     @Autowired
     private lateinit var articleMapper: ArticleMapper
 
-    override fun listArticleByAuthorId(authorId: Int): ArrayList<Article>? {
+    override fun listArticleByAuthorId(authorId: Int): List<Article> {
         // first, see if author exists
-        val author = userMapper.selectById(authorId) ?: throw BadRequestException()
+        userMapper.selectById(authorId) ?: throw BadRequestException()
         // then, fetch all visible articles by author
-        return articleMapper.listArticleByAuthorId(authorId)
+        return articleMapper.listArticleByAuthorId(authorId) ?: emptyList()
     }
 
     override fun createArticle(article: Article): Int {
@@ -32,8 +33,18 @@ class ArticleServiceImpl : IArticleService {
         return article.articleId
     }
 
-    override fun getArticleByArticleId(articleId: Int): Article? {
+    override fun getArticleByArticleId(articleId: Int, role: CommonRoles): Article? {
         logger.info("<ArticleServiceImpl.getArticleByArticleId>articleId: $articleId")
-        return articleMapper.getArticleByArticleId(articleId)
+        return articleMapper.getArticleByArticleId(articleId, role)
+    }
+
+    override fun setArticleAccessibleRole(articleId: Int, role: CommonRoles) {
+        logger.info("<ArticleServiceImpl.setArticleAccessibleRole>articleId: $articleId")
+        articleMapper.setArticleAccessibleRole(articleId, role)
+    }
+
+    override fun listArticles(role: CommonRoles): List<Article> {
+        logger.info("<ArticleServiceImpl.listArticles>role:$role")
+        return articleMapper.listArticles(role) ?: emptyList()
     }
 }

@@ -1,21 +1,4 @@
-POST http://localhost:3690/api/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "123456"
-}
-
-###
-POST http://localhost:3690/api/login
-Content-Type: application/json
-
-{
-  "email": "Andy",
-  "password": "123456"
-}
-
-###
+### Successful sign up
 POST http://localhost:3690/api/register
 Content-Type: application/json
 
@@ -26,7 +9,13 @@ Content-Type: application/json
   "email": "john@example.com"
 }
 
-###
+> {%
+  client.test("Sign up successfully", function() {
+  client.assert(response.body.code === 200, "Sign up failed");
+});
+%}
+
+### Failed sign up
 POST http://localhost:3690/api/register
 Content-Type: application/json
 
@@ -36,3 +25,39 @@ Content-Type: application/json
   "password": "120003",
   "email": "joshua@example.com"
 }
+
+> {%
+  client.test("Sign up failed", function() {
+  client.assert(response.body.code === 401, "Sign up should not succeed");
+});
+%}
+
+### Successful sign in
+POST http://localhost:3690/api/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "123456"
+}
+
+> {%
+  client.test("Sign in successfully", function() {
+  client.assert(response.body.code === 200, "Sign in failed");
+});
+%}
+
+### Failed sign in
+POST http://localhost:3690/api/login
+Content-Type: application/json
+
+{
+  "email": "Andy",
+  "password": "123456"
+}
+
+> {%
+  client.test("Sign in failed", function() {
+  client.assert(response.body.code === 403, "User should not exist");
+});
+%}
