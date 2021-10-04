@@ -47,4 +47,9 @@ class UserServiceImpl : IUserService {
         }
         return status
     }
+
+    override fun listUsers(role: CommonRoles): List<User> {
+        logger.info("<UserServiceImpl.listUsers>role:$role")
+        return userMapper.listUsersByRole(role) ?: emptyList()
+    }
 }

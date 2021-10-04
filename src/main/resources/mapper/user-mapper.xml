@@ -17,4 +17,10 @@
         FROM user
         WHERE email = #{email}
     </select>
+    <select id="listUsersByRole">
+        SELECT user.uid, email, username, password, is_locked
+        FROM user
+                 LEFT JOIN user_role ur on user.uid = ur.uid
+        WHERE ur.rid = #{role.rid}
+    </select>
 </mapper>

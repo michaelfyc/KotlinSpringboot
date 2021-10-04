@@ -13,5 +13,7 @@ interface UserMapper : BaseMapper<User> {
 
     fun getUserRole(uid: Int): CommonRoles
 
+    fun listUsersByRole(roles: CommonRoles): List<User>?
+
     fun assignRole(uid: Int, role: CommonRoles)
 }

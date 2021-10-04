@@ -26,4 +26,11 @@ interface IUserService {
      * @return Int 新建用户 uid
      */
     fun createUser(user: User, role: CommonRoles = CommonRoles.USER): Int
+
+    /**
+     * listUsers 查询特定角色的用户列表
+     * @param role 角色
+     * @return List<User> 用户列表
+     */
+    fun listUsers(role: CommonRoles = CommonRoles.USER): List<User>
 }
