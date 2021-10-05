@@ -2,6 +2,8 @@ package com.learnkotlin.kotlinspring.service
 
 import com.learnkotlin.kotlinspring.entity.User
 import com.learnkotlin.kotlinspring.enums.CommonRoles
+import com.learnkotlin.kotlinspring.enums.DEFAULT_TIME
+import java.time.LocalDateTime
 
 interface IUserService {
 
@@ -33,4 +35,12 @@ interface IUserService {
      * @return List<User> 用户列表
      */
     fun listUsers(role: CommonRoles = CommonRoles.USER): List<User>
+
+    /**
+     * setUserLockStatus 设置用户禁用状态
+     * @param uid 用户 uid
+     * @param lock 锁定: true, 解锁: false
+     * @param lockTo 锁定至，仅当 lock 为 true 时有意义
+     */
+    fun setUserLockStatus(uid: Int, lock: Boolean, lockTo: LocalDateTime = DEFAULT_TIME)
 }
