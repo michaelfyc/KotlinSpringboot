@@ -2,6 +2,7 @@ package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
 import com.learnkotlin.kotlinspring.enums.CommonRoles
+import com.learnkotlin.kotlinspring.enums.DEFAULT_TIME
 import com.learnkotlin.kotlinspring.exceptions.DuplicatedEmailException
 import com.learnkotlin.kotlinspring.mapper.UserMapper
 import com.learnkotlin.kotlinspring.service.IUserService
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class UserServiceImpl : IUserService {
@@ -46,5 +48,20 @@ class UserServiceImpl : IUserService {
             throw e
         }
         return status
+    }
+
+    override fun listUsers(role: CommonRoles): List<User> {
+        logger.info("<UserServiceImpl.listUsers>role:$role")
+        return userMapper.listUsersByRole(role) ?: emptyList()
+    }
+
+    override fun setUserLockStatus(uid: Int, lock: Boolean, lockTo: LocalDateTime) {
+        logger.info("<UserServiceImpl.setUserLockStatus>uid: $uid, lock $lock")
+        userMapper.setUserLockStatus(uid, lock)
+        if (lock) {
+            userMapper.setUserLockTime(uid, lockTo)
+        } else {
+            userMapper.setUserLockTime(uid, DEFAULT_TIME)
+        }
     }
 }

@@ -34,26 +34,26 @@ class FromTokenArgumentResolver : HandlerMethodArgumentResolver {
         val field = fromToken.field
         return getCastedClaim(field, token)
     }
-}
 
-// getCastedClaim 获取 claim 并进行类型转换
-fun getCastedClaim(field: String, token: String): Any {
-    val uid = JwtUtils.getUid(token)
-    val email = JwtUtils.getEmail(token)
-    val username = JwtUtils.getUsername(token)
-    val isLocked = JwtUtils.getIsLocked(token)
-    val role = JwtUtils.getRole(token)
-    val user = User(uid = uid, email = email, username = username, isLocked = isLocked, password = "")
-    user.role = role
-    val typeMap: Map<String, Any> =
-        mapOf(
-            "uid" to uid,
-            "email" to email,
-            "username" to username,
-            "isLocked" to isLocked,
-            "role" to role,
-            "all" to user
-        )
-    return typeMap[field]
-        ?: throw TokenClaimNotFoundException(message = "no such field $field in token")
+    // getCastedClaim 获取 claim 并进行类型转换
+    private fun getCastedClaim(field: String, token: String): Any {
+        val uid = JwtUtils.getUid(token)
+        val email = JwtUtils.getEmail(token)
+        val username = JwtUtils.getUsername(token)
+        val isLocked = JwtUtils.getIsLocked(token)
+        val role = JwtUtils.getRole(token)
+        val user = User(uid = uid, email = email, username = username, isLocked = isLocked, password = "")
+        user.role = role
+        val typeMap: Map<String, Any> =
+            mapOf(
+                "uid" to uid,
+                "email" to email,
+                "username" to username,
+                "isLocked" to isLocked,
+                "role" to role,
+                "all" to user
+            )
+        return typeMap[field]
+            ?: throw TokenClaimNotFoundException(message = "no such field $field in token")
+    }
 }
