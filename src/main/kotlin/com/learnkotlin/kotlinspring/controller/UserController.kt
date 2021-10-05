@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper
 import com.github.pagehelper.PageInfo
 import com.learnkotlin.kotlinspring.entity.User
 import com.learnkotlin.kotlinspring.enums.CommonRoles
+import com.learnkotlin.kotlinspring.enums.DEFAULT_TIME_STRING
 import com.learnkotlin.kotlinspring.exceptions.WrongCredentialException
 import com.learnkotlin.kotlinspring.service.impl.UserServiceImpl
 import com.learnkotlin.kotlinspring.util.ResultVO
@@ -14,10 +15,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 import javax.validation.Valid
 
 @RestController
@@ -42,12 +45,28 @@ class UserController {
         val password = user.password
         logger.info("Signing in:${user.email} ${user.password}")
         val userByEmail = userServiceImpl.getUserByEmail(email)
-        if (userByEmail?.password == password && !userByEmail.isLocked) {
+        if (userByEmail?.lockTo!!.isAfter(LocalDateTime.now())) {
+            userServiceImpl.setUserLockStatus(userByEmail.uid, false)
+        }
+        if (userByEmail.password == password && !userByEmail.isLocked) {
             val token = JwtUtils.sign(userByEmail)
             logger.info("${user.email} signed in as ${user.role} successfully")
             return ResultVO(StatusOK("login successfully"), mapOf("token" to token))
         }
         return ResultVO(WrongCredentialException())
+    }
+
+    @PutMapping("/lock")
+    @NeedRole(CommonRoles.ADMIN)
+    fun setUserLockStatus(
+        uid: Int,
+        lock: Boolean,
+        @RequestParam(required = false, defaultValue = DEFAULT_TIME_STRING) lockTo: LocalDateTime
+    ): ResultVO {
+        logger.info("setting $uid state")
+        userServiceImpl.setUserLockStatus(uid, lock, lockTo)
+        val state = if (lock) "locked" else "unlocked"
+        return ResultVO(StatusOK("user $uid $state successfully"))
     }
 
     @GetMapping("/users")
