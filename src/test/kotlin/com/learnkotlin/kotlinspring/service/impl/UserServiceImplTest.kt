@@ -64,15 +64,25 @@ internal class UserServiceImplTest {
 
     @Test
     @Transactional
-    fun testGetUserByUid() {
+    fun testGetUserByUid_0() {
         val uid = userServiceImpl.createUser(userAndy)
-        assertNotEquals(0, uid)
+        assertTrue(uid > 0)
         val user = userServiceImpl.getUserByUid(userAndy.uid)
         assertNotNull(user)
         assertEquals(userAndy.email, user!!.email)
         assertEquals(userAndy.password, user.password)
         assertEquals(userAndy.isLocked, user.isLocked)
         assertEquals(userAndy.role, user.role)
+    }
+
+    @Test
+    @Transactional
+    fun testGetUserByUid_1() {
+        val uid = userServiceImpl.createUser(userJohn)
+        assertTrue(uid > 0)
+        // getUserByUid does not care whether the user is locked
+        val user = userServiceImpl.getUserByUid(uid)
+        assertNotNull(user)
     }
 
     @Test
