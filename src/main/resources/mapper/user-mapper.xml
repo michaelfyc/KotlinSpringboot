@@ -28,4 +28,10 @@
                  LEFT JOIN user_role ur on user.uid = ur.uid
         WHERE ur.rid = #{role.rid}
     </select>
+    <update id="setUserLockStatus">
+        UPDATE user SET is_locked = #{lock} WHERE uid = #{uid}
+    </update>
+    <update id="setUserLockTime">
+        UPDATE user SET lock_to = #{lockTo} WHERE uid = #{uid}
+    </update>
 </mapper>
