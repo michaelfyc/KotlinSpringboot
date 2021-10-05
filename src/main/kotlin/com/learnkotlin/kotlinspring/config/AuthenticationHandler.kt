@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
+import java.time.LocalDateTime
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -44,8 +45,14 @@ class AuthenticationHandler : HandlerInterceptor {
             } catch (e: JWTVerificationException) {
                 throw InvalidTokenException(message = "token invalid")
             }
+            // if user lock expires, unlock him or her
+            val now = LocalDateTime.now()
+            if (user.lockTo.isAfter(now)) {
+                userServiceImpl.setUserLockStatus(uid, false)
+            }
             // rid 越小角色权限越大，只要角色权限大于等于需要的权限即可
-            if (user.role.rid > role.rid) {
+            // 同时还需要用户不被锁定
+            if (user.role.rid > role.rid || user.isLocked) {
                 throw PermissionDeniedException()
             }
             return true
