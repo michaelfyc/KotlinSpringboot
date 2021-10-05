@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,11 +16,26 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 internal class UserServiceImplTest {
 
-    private val userJohn = User(username = "John", password = "123456", email = "john@example.com")
-    private val userAndy = User(username = "Andy", password = "654321", email = "andy@example.com")
+    private lateinit var userJohn: User
+    private lateinit var userAndy: User
+    private lateinit var lockTo: LocalDateTime
 
     @Autowired
     lateinit var userServiceImpl: UserServiceImpl
+
+    @BeforeEach
+    fun setup() {
+        lockTo = LocalDateTime.now().plusMinutes(1).withNano(0)
+        userAndy = User(username = "Andy", password = "654321", email = "andy@example.com")
+        userJohn =
+            User(
+                username = "John",
+                password = "123456",
+                email = "john@example.com",
+                isLocked = true,
+                lockTo = lockTo
+            )
+    }
 
     @Test
     @Transactional
