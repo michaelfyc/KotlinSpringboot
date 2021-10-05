@@ -1,9 +1,10 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.User
+import com.learnkotlin.kotlinspring.enums.DEFAULT_TIME
 import com.learnkotlin.kotlinspring.exceptions.DuplicatedEmailException
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @SpringBootTest
 internal class UserServiceImplTest {
@@ -60,6 +62,32 @@ internal class UserServiceImplTest {
             assertEquals(-1, status)
             assertTrue(e is DuplicatedEmailException)
         }
+    }
+
+    @Test
+    @Transactional
+    fun testSetUserLockStatus_0() {
+        // user wasn't locked
+        val uid = userServiceImpl.createUser(userAndy)
+        assertTrue(uid > 0)
+        userServiceImpl.setUserLockStatus(uid, true, lockTo)
+        val userAndyAfterLocked = userServiceImpl.getUserByUid(uid)
+        assertNotNull(userAndyAfterLocked)
+        assertTrue(userAndyAfterLocked!!.isLocked)
+        assertEquals(lockTo, userAndyAfterLocked.lockTo)
+    }
+
+    @Test
+    @Transactional
+    fun testSetUserLockStatus_1() {
+        // user was locked
+        val uid = userServiceImpl.createUser(userJohn)
+        assertTrue(uid > 0)
+        userServiceImpl.setUserLockStatus(uid, false)
+        val userJohnAfterLocked = userServiceImpl.getUserByUid(uid)
+        assertNotNull(userJohnAfterLocked)
+        assertFalse(userJohnAfterLocked!!.isLocked)
+        assertEquals(DEFAULT_TIME.withNano(0), userJohnAfterLocked.lockTo.withNano(0))
     }
 
     @Test
