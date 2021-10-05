@@ -19,6 +19,8 @@ data class User @AutomapConstructor constructor(
     @field:Email(message = "invalid email address")
     var email: String,
     var isLocked: Boolean = false,
+    @TableField("lock_to")
+    var lockTo: LocalDateTime = DEFAULT_TIME
 ) {
     @TableField(exist = false)
     var role: CommonRoles = CommonRoles.USER
