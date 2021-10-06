@@ -27,7 +27,7 @@ class ArticleController {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     companion object {
-        const val DEFAULT_PAGE_SIZE = 15
+        private const val DEFAULT_PAGE_SIZE = 15
     }
 
     @Autowired
