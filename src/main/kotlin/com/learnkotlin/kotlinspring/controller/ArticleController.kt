@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/article")
 class ArticleController {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -33,7 +33,7 @@ class ArticleController {
     @Autowired
     private lateinit var articleServiceImpl: ArticleServiceImpl
 
-    @PostMapping("/createArticle")
+    @PostMapping("/create")
     @NeedRole
     fun createArticle(@Valid @RequestBody article: Article, @FromToken("uid") uid: Int): ResultVO {
         article.authorId = uid
@@ -42,7 +42,7 @@ class ArticleController {
         return ResultVO(StatusOK("create post successfully"), mapOf("article_id" to articleId))
     }
 
-    @GetMapping("/user/articles")
+    @GetMapping("/user")
     fun listArticleByAuthorId(
         @RequestParam("uid") authorId: Int,
         @RequestParam(required = false, defaultValue = "1") pageNum: Int,
