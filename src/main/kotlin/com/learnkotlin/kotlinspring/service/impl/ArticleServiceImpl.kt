@@ -20,11 +20,11 @@ class ArticleServiceImpl : IArticleService {
     @Autowired
     private lateinit var articleMapper: ArticleMapper
 
-    override fun listArticleByAuthorId(authorId: Int): List<Article> {
+    override fun listArticleByAuthorId(authorId: Int, role: CommonRoles): List<Article> {
         // first, see if author exists
         userMapper.selectById(authorId) ?: throw BadRequestException()
         // then, fetch all visible articles by author
-        return articleMapper.listArticleByAuthorId(authorId) ?: emptyList()
+        return articleMapper.listArticleByAuthorId(authorId, role) ?: emptyList()
     }
 
     override fun createArticle(article: Article): Int {

@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper
 interface ArticleMapper : BaseMapper<Article> {
     fun getArticleByArticleId(articleId: Int, role: CommonRoles): Article?
 
-    fun listArticleByAuthorId(authorId: Int): List<Article>?
+    fun listArticleByAuthorId(authorId: Int, role: CommonRoles): List<Article>?
 
     fun setArticleAccessibleRole(articleId: Int, role: CommonRoles)
 

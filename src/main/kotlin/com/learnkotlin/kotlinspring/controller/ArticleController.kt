@@ -46,12 +46,14 @@ class ArticleController {
     fun listArticleByAuthorId(
         @RequestParam("uid") authorId: Int,
         @RequestParam(required = false, defaultValue = "1") pageNum: Int,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE.toString()) pageSize: Int
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE.toString()) pageSize: Int,
+        @FromToken("role") role: CommonRoles?
     ): ResultVO {
         require(authorId > 0 && pageNum > 0 && pageSize > 0) {
             throw BadRequestException()
         }
         logger.info("<ArticleController.listArticleByAuthorId>authorId:$authorId")
+        val userRole = role ?: CommonRoles.GUEST
         PageHelper.startPage<Article>(pageNum, pageSize)
         val articles = articleServiceImpl.listArticleByAuthorId(authorId, userRole)
         val articlesAfterPaging = PagingUtil.paging(articles, "articles")

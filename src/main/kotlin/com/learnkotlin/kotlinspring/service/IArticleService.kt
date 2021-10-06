@@ -7,7 +7,7 @@ interface IArticleService {
     /**
      * 显示某用户的所有帖子
      */
-    fun listArticleByAuthorId(authorId: Int): List<Article>
+    fun listArticleByAuthorId(authorId: Int, role: CommonRoles = CommonRoles.GUEST): List<Article>
 
     /**
      * 新建帖子，并返回帖子 id
