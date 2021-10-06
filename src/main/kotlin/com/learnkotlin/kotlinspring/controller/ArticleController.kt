@@ -1,11 +1,11 @@
 package com.learnkotlin.kotlinspring.controller
 
 import com.github.pagehelper.PageHelper
-import com.github.pagehelper.PageInfo
 import com.learnkotlin.kotlinspring.entity.Article
 import com.learnkotlin.kotlinspring.enums.CommonRoles
 import com.learnkotlin.kotlinspring.exceptions.BadRequestException
 import com.learnkotlin.kotlinspring.service.impl.ArticleServiceImpl
+import com.learnkotlin.kotlinspring.util.PagingUtil
 import com.learnkotlin.kotlinspring.util.ResultVO
 import com.learnkotlin.kotlinspring.util.StatusNotFound
 import com.learnkotlin.kotlinspring.util.StatusOK
@@ -53,16 +53,9 @@ class ArticleController {
         }
         logger.info("<ArticleController.listArticleByAuthorId>authorId:$authorId")
         PageHelper.startPage<Article>(pageNum, pageSize)
-        val articles = articleServiceImpl.listArticleByAuthorId(authorId)
-        val articlesAfterPaging = PageInfo(articles)
-        val result = mapOf(
-            "articles" to articlesAfterPaging.list,
-            "current_page" to articlesAfterPaging.pageNum,
-            "total" to articlesAfterPaging.total,
-            "has_next_page" to articlesAfterPaging.isHasNextPage,
-            "has_previous_page" to articlesAfterPaging.isHasPreviousPage
-        )
-        return ResultVO(StatusOK(), result)
+        val articles = articleServiceImpl.listArticleByAuthorId(authorId, userRole)
+        val articlesAfterPaging = PagingUtil.paging(articles, "articles")
+        return ResultVO(StatusOK(), articlesAfterPaging)
     }
 
     @GetMapping("/articles")
@@ -74,15 +67,8 @@ class ArticleController {
         val userRole = role ?: CommonRoles.GUEST
         PageHelper.startPage<Article>(pageNum, pageSize)
         val articles = articleServiceImpl.listArticles(userRole)
-        val articlesAfterPaging = PageInfo(articles)
-        val result = mapOf(
-            "articles" to articlesAfterPaging.list,
-            "current_page" to articlesAfterPaging.pageNum,
-            "total" to articlesAfterPaging.total,
-            "has_next_page" to articlesAfterPaging.isHasNextPage,
-            "has_previous_page" to articlesAfterPaging.isHasPreviousPage
-        )
-        return ResultVO(StatusOK(), result)
+        val articlesAfterPaging = PagingUtil.paging(articles, "articles")
+        return ResultVO(StatusOK(), articlesAfterPaging)
     }
 
     @GetMapping("/article")
