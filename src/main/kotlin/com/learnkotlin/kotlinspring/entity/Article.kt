@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField
 import com.baomidou.mybatisplus.annotation.TableId
 import com.baomidou.mybatisplus.annotation.TableName
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.learnkotlin.kotlinspring.enums.CommonRoles
 import org.apache.ibatis.annotations.AutomapConstructor
 import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
@@ -23,5 +24,5 @@ data class Article @AutomapConstructor constructor(
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss", timezone = "GMT+8")
     val createAt: LocalDateTime = LocalDateTime.now(),
     @TableField("rid")
-    var rid: Int = 4
+    var rid: Int = CommonRoles.GUEST.rid
 )
