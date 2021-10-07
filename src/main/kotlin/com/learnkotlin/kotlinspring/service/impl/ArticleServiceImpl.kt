@@ -29,6 +29,9 @@ class ArticleServiceImpl : IArticleService {
 
     override fun createArticle(article: Article): Int {
         logger.info("<ArticleServiceImpl.createArticle>Article: $article")
+        // first, see if author exists
+        userMapper.selectById(article.authorId)
+            ?: throw BadRequestException(message = "user ${article.authorId} does not exist")
         articleMapper.insert(article)
         return article.articleId
     }
