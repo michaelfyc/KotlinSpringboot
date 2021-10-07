@@ -1,6 +1,7 @@
 package com.learnkotlin.kotlinspring.service.impl
 
 import com.learnkotlin.kotlinspring.entity.Article
+import com.learnkotlin.kotlinspring.entity.User
 import com.learnkotlin.kotlinspring.enums.CommonRoles
 import com.learnkotlin.kotlinspring.exceptions.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -18,9 +19,8 @@ import java.time.LocalDateTime
 @SpringBootTest
 internal class ArticleServiceImplTest {
 
-    private val existentAuthorId = 1
-    private val nonexistentAuthorId = 2
-
+    private var existentAuthorId: Int = 0
+    private val nonexistentAuthorId = 999
     private val title = "嘉然，你带我走吧"
 
     private val content = """
@@ -37,12 +37,18 @@ internal class ArticleServiceImplTest {
     @Autowired
     private lateinit var articleServiceImpl: ArticleServiceImpl
 
+    @Autowired
+    private lateinit var userServiceImpl: UserServiceImpl
+
+    private val user = User(username = "Bob", password = "123456", email = "bob@exmample.com")
+
     lateinit var now: LocalDateTime
 
     lateinit var article: Article
 
     @BeforeEach
     fun prepare() {
+        existentAuthorId = userServiceImpl.createUser(user)
         now = LocalDateTime.now().withNano(0)
         article = Article(title = title, authorId = existentAuthorId, content = content, createAt = now)
     }
