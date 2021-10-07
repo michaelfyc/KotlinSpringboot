@@ -74,6 +74,8 @@ internal class ArticleServiceImplTest {
     @Test
     @Transactional
     fun testListArticles_1() {
+        // test if article is visible to ADMIN only
+        article.rid = CommonRoles.ADMIN.rid
         val articleId = articleServiceImpl.createArticle(article)
         assertTrue(articleId > 0)
         val articles = articleServiceImpl.listArticles(CommonRoles.GUEST)
@@ -83,11 +85,11 @@ internal class ArticleServiceImplTest {
     @Test
     @Transactional
     fun testListArticles_2() {
-        article.rid = 2
+        // test if article with role GUEST is visible to USER
         val articleId = articleServiceImpl.createArticle(article)
         assertTrue(articleId > 0)
-        val articles = articleServiceImpl.listArticles(CommonRoles.GUEST)
-        assertEquals(0, articles.size)
+        val articles = articleServiceImpl.listArticles(CommonRoles.USER)
+        assertEquals(1, articles.size)
     }
 
     @Test
