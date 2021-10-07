@@ -22,7 +22,7 @@ class ArticleServiceImpl : IArticleService {
 
     override fun listArticleByAuthorId(authorId: Int, role: CommonRoles): List<Article> {
         // first, see if author exists
-        userMapper.selectById(authorId) ?: throw BadRequestException()
+        userMapper.selectById(authorId) ?: throw BadRequestException(message = "user $authorId does not exist")
         // then, fetch all visible articles by author
         return articleMapper.listArticleByAuthorId(authorId, role) ?: emptyList()
     }
