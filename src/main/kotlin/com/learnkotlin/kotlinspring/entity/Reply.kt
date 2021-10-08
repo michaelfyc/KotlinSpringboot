@@ -10,19 +10,18 @@ import org.apache.ibatis.annotations.AutomapConstructor
 import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
 
-@TableName("article")
-data class Article @AutomapConstructor constructor(
-    @TableId(value = "article_id", type = IdType.AUTO)
-    val articleId: Int = 0,
-    @NotBlank
-    var title: String,
+@TableName("reply")
+data class Reply @AutomapConstructor constructor(
+    @TableId(type = IdType.AUTO)
+    val id: Int = 0,
+    var uid: Int,
+    @TableField("article_id")
+    val articleId: Int,
     @NotBlank
     var content: String,
-    @TableField("author_id")
-    var authorId: Int,
-    @TableField("create_at")
+    @TableField("reply_at")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss", timezone = "GMT+8")
-    val createAt: LocalDateTime = LocalDateTime.now(),
+    var replyAt: LocalDateTime = LocalDateTime.now(),
     @TableField("rid")
     var rid: Int = CommonRoles.GUEST.rid
 )

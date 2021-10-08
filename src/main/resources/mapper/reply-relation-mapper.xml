@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learnkotlin.kotlinspring.mapper.ReplyRelationMapper">
+    <insert id="createReplyToArticle">
+        INSERT INTO `reply_relation`(reply_id, reply_to) VALUE (#{replyId}, #{replyId})
+    </insert>
+    <insert id="createReplyToReply">
+        INSERT INTO `reply_relation`(reply_id, reply_to) VALUE (#{replyId}, #{replyTo})
+    </insert>
+</mapper>

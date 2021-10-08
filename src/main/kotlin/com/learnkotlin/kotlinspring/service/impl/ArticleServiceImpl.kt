@@ -20,15 +20,18 @@ class ArticleServiceImpl : IArticleService {
     @Autowired
     private lateinit var articleMapper: ArticleMapper
 
-    override fun listArticleByAuthorId(authorId: Int): List<Article> {
+    override fun listArticleByAuthorId(authorId: Int, role: CommonRoles): List<Article> {
         // first, see if author exists
-        userMapper.selectById(authorId) ?: throw BadRequestException()
+        userMapper.selectById(authorId) ?: throw BadRequestException(message = "user $authorId does not exist")
         // then, fetch all visible articles by author
-        return articleMapper.listArticleByAuthorId(authorId) ?: emptyList()
+        return articleMapper.listArticleByAuthorId(authorId, role) ?: emptyList()
     }
 
     override fun createArticle(article: Article): Int {
         logger.info("<ArticleServiceImpl.createArticle>Article: $article")
+        // first, see if author exists
+        userMapper.selectById(article.authorId)
+            ?: throw BadRequestException(message = "user ${article.authorId} does not exist")
         articleMapper.insert(article)
         return article.articleId
     }

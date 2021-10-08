@@ -15,10 +15,10 @@
         WHERE `rid` >= #{role.rid}
     </select>
     <select id="listArticleByAuthorId" resultType="com.learnkotlin.kotlinspring.entity.Article">
-        SELECT `article_id`, `title`, `content`, `author_id`, `create_at`, `article`.`rid`
+        SELECT *
         FROM article
-                 LEFT JOIN user_role ur ON ur.uid = #{authorId}
-        WHERE article.rid >= ur.rid
+        WHERE author_id = #{authorId}
+            AND  rid >= #{role.rid}
     </select>
     <update id="setArticleAccessibleRole">
         UPDATE article

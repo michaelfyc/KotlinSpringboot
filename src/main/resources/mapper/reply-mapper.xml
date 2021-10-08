@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learnkotlin.kotlinspring.mapper.ReplyMapper">
+    <select id="getReplyByReplyId" resultType="com.learnkotlin.kotlinspring.entity.Reply">
+        SELECT *
+        FROM reply
+        WHERE id = #{replyId}
+          AND rid >= #{role.rid}
+    </select>
+    <select id="listRepliesOfArticle" resultType="com.learnkotlin.kotlinspring.entity.Reply">
+        SELECT *
+        FROM reply
+        WHERE article_id = #{articleId}
+          AND rid >= #{role.rid}
+    </select>
+    <select id="listRepliesByUid" resultType="com.learnkotlin.kotlinspring.entity.Reply">
+        SELECT *
+        FROM reply
+        WHERE uid = #{uid}
+          AND rid >= #{role.rid}
+    </select>
+    <select id="listRepliesOfReply" resultType="com.learnkotlin.kotlinspring.entity.Reply">
+        SELECT r.id, uid, article_id, content, reply_at, rid
+        FROM reply r
+                 INNER JOIN reply_relation rr on r.id = rr.reply_to
+        WHERE rr.reply_to = #{replyId}
+          AND rr.reply_id != #{replyId}
+          AND r.rid >= #{role.rid}
+    </select>
+</mapper>
